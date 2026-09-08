@@ -1,0 +1,54 @@
+{% extends "layout.html" %}
+{% block content %}
+{% include "_admin_nav.html" %}
+<div class="admin-panel">
+  <h1 class="admin-title">{% if mode == 'create' %}Add movie{% else %}Edit movie{% endif %}</h1>
+  <form method="POST" class="admin-form">
+    {{ form.hidden_tag() }}
+    <div class="form-grp">
+      {{ form.movie_id.label(class="form-control-label") }}
+      {{ form.movie_id(class="form-control form-control-lg") }}
+      {% for error in form.movie_id.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
+    </div>
+    <div class="form-grp">
+      {{ form.title.label(class="form-control-label") }}
+      {{ form.title(class="form-control form-control-lg") }}
+      {% for error in form.title.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
+    </div>
+    <div class="form-grp">
+      {{ form.genres.label(class="form-control-label") }}
+      {{ form.genres(class="form-control form-control-lg") }}
+      {% for error in form.genres.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
+    </div>
+    <div class="form-grp">
+      {{ form.overview.label(class="form-control-label") }}
+      {{ form.overview(class="form-control form-control-lg", rows=4) }}
+      {% for error in form.overview.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
+    </div>
+    <div class="form-grp">
+      {{ form.cast.label(class="form-control-label") }}
+      {{ form.cast(class="form-control form-control-lg") }}
+      {% for error in form.cast.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
+    </div>
+    <div class="form-grp">
+      {{ form.director.label(class="form-control-label") }}
+      {{ form.director(class="form-control form-control-lg") }}
+      {% for error in form.director.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
+    </div>
+    <div class="form-grp">
+      {{ form.year.label(class="form-control-label") }}
+      {{ form.year(class="form-control form-control-lg") }}
+      {% for error in form.year.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
+    </div>
+    <div class="form-grp">
+      {{ form.image_url.label(class="form-control-label") }}
+      {{ form.image_url(class="form-control form-control-lg") }}
+      {% for error in form.image_url.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
+    </div>
+    <div class="admin-form-actions">
+      {{ form.submit(class="btn btn-outline-info") }}
+      <a class="btn btn-secondary" href="{{ url_for('admin_movies') }}">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock content %}

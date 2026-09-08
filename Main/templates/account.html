@@ -1,0 +1,83 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="account-container">
+  <h1 class="page-title">MovieHub Account Settings</h1>
+
+  <div class="profile-section">
+    
+    <img class="profile-img" src="{{ image_file }}?v={{ timestamp }}" alt="Profile Picture">
+
+    <div class="profile-info">
+      <h2 class="username">{{ current_user.username }}</h2>
+      <p class="email">{{ current_user.email }}</p>
+    </div>
+  </div>
+
+  <form method="POST" action="" enctype="multipart/form-data" class="account-form">
+    {{ form.hidden_tag() }}
+    <fieldset>
+      <legend class="form-title">Account Info</legend>
+
+      <div class="form-group">
+        {{ form.username.label(class="form-label") }}
+        {% if form.username.errors %}
+          {{ form.username(class="form-input is-invalid") }}
+          <div class="invalid-feedback">
+            {% for error in form.username.errors %}
+              <span>{{ error }}</span>
+            {% endfor %}
+          </div>
+        {% else %}
+          {{ form.username(class="form-input") }}
+        {% endif %}
+      </div>
+
+      <div class="form-group">
+        {{ form.email.label(class="form-label") }}
+        {% if form.email.errors %}
+          {{ form.email(class="form-input is-invalid") }}
+          <div class="invalid-feedback">
+            {% for error in form.email.errors %}
+              <span>{{ error }}</span>
+            {% endfor %}
+          </div>
+        {% else %}
+          {{ form.email(class="form-input") }}
+        {% endif %}
+      </div>
+
+      <div class="form-group">
+        {{ form.picture.label(class="form-label") }}
+        {{ form.picture(class="form-input-file") }}
+        {% if form.picture.errors %}
+          {% for error in form.picture.errors %}
+            <span class="text-danger">{{ error }}</span><br/>
+          {% endfor %}
+        {% endif %}
+      </div>
+    </fieldset>
+
+    <button type="submit" class="btn-update">Update</button>
+  </form>
+
+  <hr class="divider"/>
+
+  <h3 class="watchlist-heading">Your Watchlist</h3>
+  {% if watchlist %}
+    <div class="watchlist">
+      {% for movie in watchlist %}
+        <div class="watchlist-item-wrapper">
+          <a href="{{ url_for('movie_info', movie_id=movie.movie_id) }}" class="watchlist-item">
+            <span class="badge">{{ movie.title }}</span>
+          </a>
+          <form method="POST" action="{{ url_for('remove_from_watchlist', movie_id=movie.movie_id) }}" style="display:inline;">
+            <button type="submit" class="btn btn-danger btn-sm ml-2">Remove</button>
+          </form>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="no-watchlist-msg">You have no movies in your watchlist.</p>
+  {% endif %}
+</div>
+{% endblock content %}

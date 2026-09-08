@@ -1,0 +1,30 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="content-section">
+  <h2>{{ movie.title }} ({{ movie.year }})</h2>
+  
+  <div class="media mb-4">
+    {% if image_url %}
+      <img class="mr-4" src="{{ image_url }}" alt="{{ movie.title }} poster" style="max-width:200px; max-height:300px;">
+    {% else %}
+      <img class="mr-4" src="{{ url_for('static', filename='default_movie.jpg') }}" alt="Default movie poster" style="max-width:200px; max-height:300px;">
+    {% endif %}
+    
+    <div class="media-body">
+      <p><strong>Director:</strong> {{ movie.director or 'N/A' }}</p>
+      <p><strong>Cast:</strong> {{ movie.cast or 'N/A' }}</p>
+      <p><strong>Genres:</strong> {{ movie.genres or 'N/A' }}</p>
+      <p><strong>Overview:</strong></p>
+      <p>{{ movie.overview or 'No overview available.' }}</p>
+    </div>
+  </div>
+
+  <div class="text-center mt-4">
+    <a href="{{ url_for('home') }}" class="btn btn-back-home">← Back to Home</a>
+    
+    {% if movie.trailer_url %}
+      <a href="{{ movie.trailer_url }}" target="_blank" class="btn btn-info ml-2">Watch Trailer</a>
+    {% endif %}
+  </div>
+</div>
+{% endblock content %}

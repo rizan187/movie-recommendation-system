@@ -1,0 +1,60 @@
+{% extends "layout.html" %}
+{% block content %}
+{% include "_admin_nav.html" %}
+<div class="admin-panel">
+  <h1 class="admin-title">Watchlists</h1>
+  <p class="admin-subtitle">Add or remove movies from any user watchlist.</p>
+
+  <form method="POST" class="admin-form admin-inline-form">
+    {{ form.hidden_tag() }}
+    <div class="form-grp">
+      {{ form.user_id.label(class="form-control-label") }}
+      {{ form.user_id(class="form-control") }}
+    </div>
+    <div class="form-grp">
+      {{ form.movie_id.label(class="form-control-label") }}
+      {{ form.movie_id(class="form-control", placeholder="Movie ID") }}
+      {% for error in form.movie_id.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
+    </div>
+    <div class="form-grp">
+      {{ form.submit(class="btn btn-outline-info") }}
+    </div>
+  </form>
+
+  <div class="admin-table-wrap">
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>User</th>
+          <th>Email</th>
+          <th>Movie ID</th>
+          <th>Title</th>
+          <th>Added</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for entry in entries %}
+        <tr>
+          <td>{{ entry.username }}</td>
+          <td>{{ entry.email }}</td>
+          <td>{{ entry.movie_id }}</td>
+          <td>{{ entry.title }}</td>
+          <td>{% if entry.added_on %}{{ entry.added_on.strftime('%Y-%m-%d %H:%M') }}{% endif %}</td>
+          <td class="admin-actions">
+            <form method="POST" action="{{ url_for('admin_watchlist_delete', entry_id=entry.id) }}" onsubmit="return confirm('Remove this watchlist item?');">
+              {{ csrf_form.hidden_tag() }}
+              <button class="btn btn-sm btn-danger" type="submit">Delete</button>
+            </form>
+          </td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="6">No watchlist items yet.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock content %}

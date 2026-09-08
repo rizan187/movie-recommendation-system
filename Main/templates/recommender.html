@@ -1,0 +1,72 @@
+{% extends "layout.html" %}
+{% block content %}
+  <div class="content-section">
+    <div class="form-wrapper">
+      <form method="POST" action="">
+        {{ form.hidden_tag() }}
+        <fieldset class="form-group">
+          <legend class="border-bottom mb-4">Movie Recommender</legend>
+
+          <div class="form-group">
+            {{ form.moviename.label(class="form-control-label") }}
+
+            {% if form.moviename.errors %}
+              {{ form.moviename(class="form-control form-control-lg is-invalid") }}
+              <div class="invalid-feedback">
+                {% for error in form.moviename.errors %}
+                  <span>{{ error }}</span>
+                {% endfor %}
+              </div>
+            {% else %}
+              {{ form.moviename(class="form-control form-control-lg") }}
+            {% endif %}
+          </div>
+        </fieldset>
+        <br/>
+        <div class="form-group">
+          {{ form.submit(class="btn btn-outline-info") }}
+        </div>
+      </form>
+    </div>
+  </div>
+  <hr />
+
+  {% if final %}
+    {% for movie in final %}
+      <a href="{{ url_for('movie_info', movie_id=movie.movie_id) }}" style="text-decoration:none; color:inherit;">
+        <article class="media content-section">
+          <div class="media-body">
+            <div class="article-metadata">
+              {% if movie.image_url %}
+                <img class="book-cover-image"
+                     src="{{ movie.image_url }}"
+                     alt="{{ movie.title }} poster"
+                     style="max-width:100px; max-height:150px;"
+                     align="left"
+                     onerror="this.onerror=null;this.src='/static/default_movie.jpg';" />
+              {% else %}
+                <img class="book-cover-image"
+                     src="/static/default_movie.jpg"
+                     alt="Default movie poster"
+                     style="max-width:100px; max-height:150px;"
+                     align="left" />
+              {% endif %}
+              <strong>{{ movie.title }}</strong>
+            </div>
+            <p class="article-content"><i>Release year :</i> {{ movie.year }}</p>
+            <p class="article-content"><i>Director :</i> {{ movie.director }}</p>
+
+            {% if current_user.is_authenticated %}
+              <form method="POST" action="{{ url_for('add_to_watchlist', movie_id=movie.movie_id) }}">
+                <button type="submit" class="btn btn-primary btn-sm mt-2">Add to Watchlist</button>
+              </form>
+              {% if movie.trailer_url %}
+                <a href="{{ movie.trailer_url }}" target="_blank" class="btn btn-info btn-sm mt-2">Watch Trailer</a>
+              {% endif %}
+            {% endif %}
+          </div>
+        </article>
+      </a>
+    {% endfor %}
+  {% endif %}
+{% endblock content %}

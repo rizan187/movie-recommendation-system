@@ -1,0 +1,50 @@
+{% extends "layout.html" %}
+{% block content %}
+{% include "_admin_nav.html" %}
+<div class="admin-panel">
+  <div class="admin-header-row">
+    <div>
+      <h1 class="admin-title">Users</h1>
+      <p class="admin-subtitle">{{ users|length }} registered accounts</p>
+    </div>
+    <a class="btn btn-outline-info" href="{{ url_for('admin_user_create') }}">Add user</a>
+  </div>
+
+  <div class="admin-table-wrap">
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Username</th>
+          <th>Email</th>
+          <th>Role</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for user in users %}
+        <tr>
+          <td>{{ user.id }}</td>
+          <td>{{ user.username }}</td>
+          <td>{{ user.email }}</td>
+          <td>{% if user.is_admin %}Admin{% else %}User{% endif %}</td>
+          <td class="admin-actions">
+            <a class="btn btn-sm btn-outline-info" href="{{ url_for('admin_user_edit', user_id=user.id) }}">Edit</a>
+            {% if user.id != current_user.id %}
+            <form method="POST" action="{{ url_for('admin_user_delete', user_id=user.id) }}" onsubmit="return confirm('Delete this user?');">
+              {{ csrf_form.hidden_tag() }}
+              <button class="btn btn-sm btn-danger" type="submit">Delete</button>
+            </form>
+            {% endif %}
+          </td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="5">No users found.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock content %}

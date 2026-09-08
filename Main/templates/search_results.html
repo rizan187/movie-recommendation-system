@@ -1,0 +1,40 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="container mt-4">
+  <h2 class="mb-4">Search Results for: <em>{{ query }}</em></h2>
+
+  {% if results %}
+    {% for movie in results %}
+      <article class="media content-section" style="cursor:pointer;">
+        <div class="media-body">
+          <div class="article-metadata">
+            <img class="book-cover-image movie-poster"
+                 src="{{ movie.image_url }}"
+                 align="left"
+                 alt="Movie Poster"
+                 data-title="{{ movie.title }}"
+                 data-overview="{{ movie.overview }}"
+                 data-genres="{{ movie.genres }}"
+                 data-cast="{{ movie.cast }}"
+                 data-director="{{ movie.director }}"
+                 data-year="{{ movie.year }}"
+                 data-movieid="{{ movie.movie_id }}"
+                 data-trailerurl="{{ movie.trailer_url }}">
+            <strong>{{ movie.title }}</strong>
+          </div>
+          <p class="article-content"><i>Release year :</i> {{ movie.year }}</p>
+          <p class="article-content"><i>Director :</i> {{ movie.director }}</p>
+        </div>
+      </article>
+    {% endfor %}
+  {% else %}
+    <div class="alert alert-warning" role="alert">
+      No movies found matching your search: <strong>{{ query }}</strong>
+    </div>
+  {% endif %}
+  
+  <a href="{{ url_for('home') }}" class="btn btn-secondary mt-3">Back to Home</a>
+</div>
+
+{% endblock content %}
