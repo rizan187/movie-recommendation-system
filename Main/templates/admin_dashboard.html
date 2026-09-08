@@ -1,57 +1,43 @@
 {% extends "layout.html" %}
 {% block content %}
 {% include "_admin_nav.html" %}
-<div class="admin-panel">
-  <h1 class="admin-title">Admin Dashboard</h1>
-  <p class="admin-subtitle">Create, read, update, and delete movies, users, and watchlist items.</p>
-
-  <div class="admin-stats">
-    <div class="admin-stat-card">
-      <span class="admin-stat-label">Movies</span>
-      <span class="admin-stat-value">{{ movie_count }}</span>
-      <a href="{{ url_for('admin_movies') }}">Manage movies</a>
-    </div>
-    <div class="admin-stat-card">
-      <span class="admin-stat-label">Users</span>
-      <span class="admin-stat-value">{{ user_count }}</span>
-      <a href="{{ url_for('admin_users') }}">Manage users</a>
-    </div>
-    <div class="admin-stat-card">
-      <span class="admin-stat-label">Admins</span>
-      <span class="admin-stat-value">{{ admin_count }}</span>
-      <a href="{{ url_for('admin_users') }}">Roles</a>
-    </div>
-    <div class="admin-stat-card">
-      <span class="admin-stat-label">Watchlist items</span>
-      <span class="admin-stat-value">{{ watchlist_count }}</span>
-      <a href="{{ url_for('admin_watchlist') }}">Manage watchlists</a>
-    </div>
+<div class="animate-fade-up">
+  <h1 class="text-3xl font-bold text-white">Admin dashboard</h1>
+  <p class="mt-1 text-sm text-zinc-400">Manage catalog, accounts, and watchlists.</p>
+  <div class="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+    <a class="rounded-2xl border border-white/10 bg-white/5 p-5 transition hover:-translate-y-0.5 hover:border-amber-400/40" href="{{ url_for('admin_movies') }}">
+      <p class="text-sm text-zinc-400">Movies</p>
+      <p class="mt-1 text-3xl font-bold text-amber-300">{{ movie_count }}</p>
+    </a>
+    <a class="rounded-2xl border border-white/10 bg-white/5 p-5 transition hover:-translate-y-0.5 hover:border-amber-400/40" href="{{ url_for('admin_users') }}">
+      <p class="text-sm text-zinc-400">Users</p>
+      <p class="mt-1 text-3xl font-bold text-amber-300">{{ user_count }}</p>
+    </a>
+    <a class="rounded-2xl border border-white/10 bg-white/5 p-5" href="{{ url_for('admin_users') }}">
+      <p class="text-sm text-zinc-400">Admins</p>
+      <p class="mt-1 text-3xl font-bold text-amber-300">{{ admin_count }}</p>
+    </a>
+    <a class="rounded-2xl border border-white/10 bg-white/5 p-5" href="{{ url_for('admin_watchlist') }}">
+      <p class="text-sm text-zinc-400">Watchlist items</p>
+      <p class="mt-1 text-3xl font-bold text-amber-300">{{ watchlist_count }}</p>
+    </a>
   </div>
-
-  <div class="admin-grid">
-    <section class="admin-card">
-      <h2>Recent movies</h2>
-      {% if recent_movies %}
-      <ul class="admin-plain-list">
+  <div class="mt-8 grid gap-6 lg:grid-cols-2">
+    <section class="rounded-2xl border border-white/10 bg-white/5 p-5">
+      <h2 class="font-semibold text-white">Recent movies</h2>
+      <ul class="mt-3 space-y-2 text-sm text-zinc-300">
         {% for movie in recent_movies %}
-        <li>{{ movie.title }} <span class="text-muted">(ID {{ movie.movie_id }})</span></li>
-        {% endfor %}
+        <li>{{ movie.title }} <span class="text-zinc-500">(ID {{ movie.movie_id }})</span></li>
+        {% else %}<li class="text-zinc-500">No movies yet.</li>{% endfor %}
       </ul>
-      {% else %}
-      <p class="text-muted">No movies yet.</p>
-      {% endif %}
     </section>
-    <section class="admin-card">
-      <h2>Recent users</h2>
-      {% if recent_users %}
-      <ul class="admin-plain-list">
+    <section class="rounded-2xl border border-white/10 bg-white/5 p-5">
+      <h2 class="font-semibold text-white">Recent users</h2>
+      <ul class="mt-3 space-y-2 text-sm text-zinc-300">
         {% for user in recent_users %}
-        <li>{{ user.username }} <span class="text-muted">{{ user.email }}</span></li>
-        {% endfor %}
+        <li>{{ user.username }} <span class="text-zinc-500">{{ user.email }}</span></li>
+        {% else %}<li class="text-zinc-500">No users yet.</li>{% endfor %}
       </ul>
-      {% else %}
-      <p class="text-muted">No users yet.</p>
-      {% endif %}
     </section>
   </div>
 </div>

@@ -89,11 +89,6 @@ class DeleteMovie(FlaskForm):
             if movie_id.data.strip() not in existing_ids:
                 raise ValidationError('Movie ID not found.')
 
-class Contact(FlaskForm):
-    subject = StringField('Subject', validators=[DataRequired(), Length(max=100)])
-    query = TextAreaField('Query', validators=[DataRequired(), Length(max=500)])
-    submit = SubmitField('Submit')
-
 # <-- SearchForm  -->
 class SearchForm(FlaskForm):
     query = StringField('Search Movies', validators=[DataRequired(), Length(min=1, max=100)])

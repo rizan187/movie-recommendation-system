@@ -1,7 +1,8 @@
-<div class="admin-shell">
-  <div class="admin-nav">
-    <a class="admin-nav-link {% if request.endpoint == 'admin_dashboard' %}active{% endif %}" href="{{ url_for('admin_dashboard') }}">Dashboard</a>
-    <a class="admin-nav-link {% if request.endpoint and request.endpoint.startswith('admin_movie') %}active{% endif %}" href="{{ url_for('admin_movies') }}">Movies</a>
-    <a class="admin-nav-link {% if request.endpoint and request.endpoint.startswith('admin_user') %}active{% endif %}" href="{{ url_for('admin_users') }}">Users</a>
-    <a class="admin-nav-link {% if request.endpoint and request.endpoint.startswith('admin_watchlist') %}active{% endif %}" href="{{ url_for('admin_watchlist') }}">Watchlists</a>
-  </div>
+{% set active = "rounded-full bg-amber-400 px-4 py-2 text-sm font-semibold text-zinc-950" %}
+{% set idle = "rounded-full border border-white/10 px-4 py-2 text-sm font-medium text-zinc-300 hover:border-amber-400/50 hover:text-white" %}
+<nav class="mb-6 flex flex-wrap gap-2">
+  <a class="{% if request.endpoint == 'admin_dashboard' %}{{ active }}{% else %}{{ idle }}{% endif %}" href="{{ url_for('admin_dashboard') }}">Dashboard</a>
+  <a class="{% if request.endpoint and request.endpoint.startswith('admin_movie') %}{{ active }}{% else %}{{ idle }}{% endif %}" href="{{ url_for('admin_movies') }}">Movies</a>
+  <a class="{% if request.endpoint and request.endpoint.startswith('admin_user') %}{{ active }}{% else %}{{ idle }}{% endif %}" href="{{ url_for('admin_users') }}">Users</a>
+  <a class="{% if request.endpoint and request.endpoint.startswith('admin_watchlist') %}{{ active }}{% else %}{{ idle }}{% endif %}" href="{{ url_for('admin_watchlist') }}">Watchlists</a>
+</nav>

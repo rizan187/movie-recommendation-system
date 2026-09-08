@@ -1,30 +1,28 @@
 {% extends "layout.html" %}
 {% block content %}
-<div class="content-section">
-  <h2>{{ movie.title }} ({{ movie.year }})</h2>
-  
-  <div class="media mb-4">
-    {% if image_url %}
-      <img class="mr-4" src="{{ image_url }}" alt="{{ movie.title }} poster" style="max-width:200px; max-height:300px;">
-    {% else %}
-      <img class="mr-4" src="{{ url_for('static', filename='default_movie.jpg') }}" alt="Default movie poster" style="max-width:200px; max-height:300px;">
-    {% endif %}
-    
-    <div class="media-body">
-      <p><strong>Director:</strong> {{ movie.director or 'N/A' }}</p>
-      <p><strong>Cast:</strong> {{ movie.cast or 'N/A' }}</p>
-      <p><strong>Genres:</strong> {{ movie.genres or 'N/A' }}</p>
-      <p><strong>Overview:</strong></p>
-      <p>{{ movie.overview or 'No overview available.' }}</p>
+{% set poster = image_url or movie.image_url %}
+<section class="animate-fade-up overflow-hidden rounded-3xl border border-white/10 bg-white/5 shadow-2xl">
+  <div class="grid gap-0 lg:grid-cols-[280px_1fr]">
+    <img class="h-80 w-full object-cover lg:h-full" src="{{ poster }}" alt="{{ movie.title }} poster" />
+    <div class="p-6 sm:p-10">
+      <p class="text-xs uppercase tracking-[0.25em] text-amber-300">Movie details</p>
+      <h1 class="mt-2 text-3xl font-extrabold text-white sm:text-4xl">{{ movie.title }}</h1>
+      <p class="mt-1 text-zinc-400">{{ movie.year }} · {{ movie.director or 'N/A' }}</p>
+      <p class="mt-6 text-sm leading-relaxed text-zinc-300">{{ movie.overview or 'No overview available.' }}</p>
+      <dl class="mt-6 grid gap-2 text-sm text-zinc-300">
+        <div><span class="text-zinc-500">Genres:</span> {{ movie.genres or 'N/A' }}</div>
+        <div><span class="text-zinc-500">Cast:</span> {{ movie.cast or 'N/A' }}</div>
+      </dl>
+      <div class="mt-8 flex flex-wrap gap-3">
+        <a class="rounded-full border border-white/15 px-5 py-2.5 text-sm font-semibold text-white hover:border-amber-400" href="{{ url_for('home') }}">Back home</a>
+        <button class="rounded-full bg-amber-400 px-5 py-2.5 text-sm font-semibold text-zinc-950 hover:bg-amber-300" type="button" data-play-trailer data-title="{{ movie.title|e }}" data-year="{{ movie.year|e }}">Watch Trailer</button>
+        {% if current_user.is_authenticated %}
+        <form method="POST" action="{{ url_for('add_to_watchlist', movie_id=movie.movie_id) }}">
+          <button class="rounded-full border border-white/15 px-5 py-2.5 text-sm font-semibold text-white hover:border-amber-400" type="submit">Add to Watchlist</button>
+        </form>
+        {% endif %}
+      </div>
     </div>
   </div>
-
-  <div class="text-center mt-4">
-    <a href="{{ url_for('home') }}" class="btn btn-back-home">← Back to Home</a>
-    
-    {% if movie.trailer_url %}
-      <a href="{{ movie.trailer_url }}" target="_blank" class="btn btn-info ml-2">Watch Trailer</a>
-    {% endif %}
-  </div>
-</div>
+</section>
 {% endblock content %}

@@ -3,7 +3,7 @@ import os
 import csv
 import random
 from csv import writer
-from flask import render_template, url_for, flash, redirect, request
+from flask import render_template, url_for, flash, redirect, request, jsonify
 from flask_login import login_user, current_user, logout_user, login_required
 from Main.decorators import admin_required
 from PIL import Image
@@ -12,10 +12,10 @@ import secrets
 from Main import app, db, bcrypt
 from Main.form import (
     RegistrationForm, LoginForm, MovieForm,
-    Contact, UpdateAccount
+    UpdateAccount
 )
 from Main.models import User, UserWatchlist  
-from Main.recomm import recom, movie_display
+from Main.recomm import recom, movie_display, resolve_youtube_trailer, enlarge_poster
 
 # CSV file paths
 BASE_DIR = os.path.abspath(os.getcwd())
@@ -51,11 +51,11 @@ def movie_info(movie_id):
             if row['movie_id'].strip() == str(movie_id).strip():
                 image_url = row.get('image_url', None)
                 break
-    movie['image_url'] = image_url or url_for('static', filename='default_movie.jpg')
+    movie['image_url'] = enlarge_poster(image_url) if image_url else url_for('static', filename='default_movie.jpg')
 
     movie['trailer_url'] = get_trailer_search_url(movie.get('title', ''), movie.get('year', ''))
 
-    return render_template('movieinfo.html', movie=movie)
+    return render_template('movieinfo.html', movie=movie, image_url=movie.get('image_url'))
 
 @app.route('/add_to_watchlist/<movie_id>', methods=['POST'])
 @login_required
@@ -172,16 +172,6 @@ def upload_to_csv(file_name, row):
 @admin_required
 def uploadmovie():
     return redirect(url_for('admin_movie_create'))
-
-@app.route("/contact", methods=['GET', 'POST'])
-@login_required
-def contact():
-    form = Contact()
-    cur = current_user.username
-    if form.validate_on_submit():
-        flash('Query submitted successfully!', 'success')
-        return redirect(url_for('contact'))
-    return render_template('contact.html', title='Contact', current=cur, form=form)
 
 def delete_row_by_id(file_name, movie_id):
     lines = []
@@ -300,6 +290,8 @@ def search():
                             break
                 if not image_url:
                     image_url = url_for('static', filename='default_movie.jpg')
+                else:
+                    image_url = enlarge_poster(image_url)
 
                 trailer_url = get_trailer_search_url(row['title'], row['year'])
 
@@ -323,6 +315,17 @@ def search():
         results = results[:20]
 
     return render_template('search_results.html', results=results, query=query)
+
+
+@app.route('/trailer')
+def trailer():
+    title = request.args.get('title', '').strip()
+    year = request.args.get('year', '').strip()
+    if not title:
+        return jsonify({'embed_url': ''}), 400
+    return jsonify({'embed_url': resolve_youtube_trailer(title, year)})
+
+
 @app.route('/surprise')
 @login_required
 def surprise():
@@ -339,6 +342,8 @@ def surprise():
                 break
     if not image_url:
         image_url = url_for('static', filename='default_movie.jpg')
+    else:
+        image_url = enlarge_poster(image_url)
 
     trailer_url = get_trailer_search_url(movie.get('title', ''), movie.get('year', ''))
     

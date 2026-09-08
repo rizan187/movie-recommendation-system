@@ -1,90 +1,38 @@
 {% extends "layout.html" %}
 {% block content %}
-	<div class="content-section">
-		<form method="POST" action="">
-			{{ form.hidden_tag() }}
-			<fieldset class="form-grp">
-				<legend class="border-botton mb-4">Join Today</legend>
-
-				<div class="form-grp">
-					{{ form.username.label(class="form-control-label")}}
-
-					{% if form.username.errors %}
-						{{ form.username(class="form-control form-control-lg is-invalid")}}
-						<div class="invalid-feedback">
-							{% for error in form.username.errors %}
-								<span>
-									{{ error }}
-								</span>
-							{% endfor %}
-						</div>
-						{% else %}
-							{{ form.username(class="form-control form-control-lg")}}
-					{% endif %}
-				</div>
-
-				<div class="form-grp">
-					{{ form.email.label(class="form-control-label")}}
-
-					{% if form.email.errors %}
-						{{ form.email(class="form-control form-control-lg is-invalid")}}
-						<div class="invalid-feedback">
-							{% for error in form.email.errors %}
-								<span>
-									{{ error }}
-								</span>
-							{% endfor %}
-						</div>
-						{% else %}
-							{{ form.email(class="form-control form-control-lg")}}
-					{% endif %}
-				</div>
-
-				<div class="form-grp">
-					{{ form.password.label(class="form-control-label")}}
-
-					{% if form.password.errors %}
-						{{ form.password(class="form-control form-control-lg is-invalid")}}
-						<div class="invalid-feedback">
-							{% for error in form.password.errors %}
-								<span>
-									{{ error }}
-								</span>
-							{% endfor %}
-						</div>
-						{% else %}
-							{{ form.password(class="form-control form-control-lg")}}
-					{% endif %}
-				</div>
-
-				<div class="form-grp">
-					{{ form.confirm_pswd.label(class="form-control-label")}}
-
-					
-					{% if form.confirm_pswd.errors %}
-						{{ form.confirm_pswd(class="form-control form-control-lg is-invalid")}}
-						<div class="invalid-feedback">
-							{% for error in form.confirm_pswd.errors %}
-								<span>
-									{{ error }}
-								</span>
-							{% endfor %}
-						</div>
-						{% else %}
-							{{ form.confirm_pswd(class="form-control form-control-lg")}}
-					{% endif %}
-				</div>
-			</fieldset>
-
-			<br/>
-			<div class="form-grp">
-				{{ form.submit(class="btn btn-outline-info")}}
-			</div>
-		</form>
-	</div>
-	<div class="border-top pt-3">
-		<small class="text-muted">
-			Already Have an Account? <a class="ml-2" href="{{ url_for('login')}}">Sign In</a>
-		</small>
-	</div>
+{% set field = "mt-1 block w-full rounded-xl border border-white/10 bg-zinc-950/60 px-4 py-3 text-sm text-white focus:border-amber-400 focus:outline-none focus:ring-2 focus:ring-amber-400/30" %}
+<div class="mx-auto max-w-md animate-fade-up">
+  <div class="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-2xl sm:p-8">
+    <p class="text-xs uppercase tracking-[0.25em] text-amber-300">Create account</p>
+    <h1 class="mt-2 text-3xl font-bold text-white">Join today</h1>
+    <form method="POST" class="mt-6 space-y-4">
+      {{ form.hidden_tag() }}
+      <div>
+        {{ form.username.label(class="text-sm font-medium text-zinc-300") }}
+        {{ form.username(class=field) }}
+        {% for error in form.username.errors %}<p class="mt-1 text-xs text-rose-300">{{ error }}</p>{% endfor %}
+      </div>
+      <div>
+        {{ form.email.label(class="text-sm font-medium text-zinc-300") }}
+        {{ form.email(class=field) }}
+        {% for error in form.email.errors %}<p class="mt-1 text-xs text-rose-300">{{ error }}</p>{% endfor %}
+      </div>
+      <div>
+        {{ form.password.label(class="text-sm font-medium text-zinc-300") }}
+        {{ form.password(class=field) }}
+        {% for error in form.password.errors %}<p class="mt-1 text-xs text-rose-300">{{ error }}</p>{% endfor %}
+      </div>
+      <div>
+        {{ form.confirm_pswd.label(class="text-sm font-medium text-zinc-300") }}
+        {{ form.confirm_pswd(class=field) }}
+        {% for error in form.confirm_pswd.errors %}<p class="mt-1 text-xs text-rose-300">{{ error }}</p>{% endfor %}
+      </div>
+      {{ form.submit(class="w-full rounded-xl bg-amber-400 py-3 text-sm font-semibold text-zinc-950 transition hover:bg-amber-300") }}
+    </form>
+    <p class="mt-6 text-center text-sm text-zinc-400">
+      Already have an account?
+      <a class="font-semibold text-amber-300 hover:text-amber-200" href="{{ url_for('login') }}">Sign in</a>
+    </p>
+  </div>
+</div>
 {% endblock content %}

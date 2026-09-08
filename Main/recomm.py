@@ -1,6 +1,9 @@
 import pandas as pd
 import numpy as np
 import os
+import re
+from urllib.parse import quote_plus
+from urllib.request import Request, urlopen
 from fuzzywuzzy import fuzz
 
 
@@ -12,9 +15,40 @@ IMAGES_CSV = os.path.join(BASE_DIR, 'movie_images.csv')
 DEFAULT_IMAGE_URL = '/static/defaultposter.jpg'
 
 
+def enlarge_poster(url):
+    if not isinstance(url, str) or '._V1_' not in url:
+        return url
+    return url.split('._V1_')[0] + '._V1_SX500.jpg'
+
+
 def get_trailer_search_url(title, year):
     query = '+'.join(str(title).split()) + '+' + str(year) + '+trailer'
     return f"https://www.youtube.com/results?search_query={query}"
+
+
+def resolve_youtube_trailer(title, year=''):
+    query = f"{title} {year} official trailer".strip()
+    encoded = quote_plus(query)
+    search_url = f"https://www.youtube.com/results?search_query={encoded}"
+    try:
+        req = Request(search_url, headers={
+            'User-Agent': (
+                'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
+                'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+            ),
+            'Accept-Language': 'en-US,en;q=0.9',
+        })
+        with urlopen(req, timeout=6) as response:
+            html = response.read().decode('utf-8', errors='ignore')
+        video_ids = re.findall(r'"videoId":"([a-zA-Z0-9_-]{11})"', html)
+        if video_ids:
+            return (
+                f"https://www.youtube.com/embed/{video_ids[0]}"
+                "?autoplay=1&rel=0&modestbranding=1"
+            )
+    except Exception:
+        pass
+    return f"https://www.youtube.com/embed?listType=search&list={encoded}&autoplay=1"
 
 
 def recom(movie_title_input):
@@ -88,7 +122,9 @@ def recom(movie_title_input):
         if match.empty:
             return DEFAULT_IMAGE_URL
         url = match.iloc[0].get('image_url', '')
-        return url if isinstance(url, str) and url.strip() else DEFAULT_IMAGE_URL
+        if isinstance(url, str) and url.strip():
+            return enlarge_poster(url.strip())
+        return DEFAULT_IMAGE_URL
 
     final_list = []
     for mid, _ in top_similar_movies:
@@ -104,6 +140,9 @@ def recom(movie_title_input):
             "image_url": image_url,
             "year": year,
             "director": director,
+            "genres": row.get("genres", ""),
+            "overview": row.get("overview", ""),
+            "cast": row.get("cast", ""),
             "trailer_url": trailer_url
         })
 
@@ -131,7 +170,9 @@ def movie_display():
         if match.empty:
             return DEFAULT_IMAGE_URL
         url = match.iloc[0].get('image_url', '')
-        return url if isinstance(url, str) and url.strip() else DEFAULT_IMAGE_URL
+        if isinstance(url, str) and url.strip():
+            return enlarge_poster(url.strip())
+        return DEFAULT_IMAGE_URL
 
     for idx in rand_indices:
         row = movies.iloc[idx]
@@ -149,6 +190,9 @@ def movie_display():
             "image_url": image_url,
             "year": year,
             "director": director,
+            "genres": row.get("genres", ""),
+            "overview": row.get("overview", ""),
+            "cast": row.get("cast", ""),
             "trailer_url": trailer_url
         })
 
