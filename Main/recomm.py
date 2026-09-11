@@ -88,17 +88,20 @@ def recom(movie_title_input):
     movie_title = movie_title_input.strip().lower()
     titles = df['title'].str.strip().str.lower()
 
-    # Fuzzy matching with threshold 75
-    matches = [(title, fuzz.ratio(movie_title, title)) for title in titles]
+    # Match partial titles like the catalog search, preferring the closest full title.
+    matches = [
+        (title, fuzz.partial_ratio(movie_title, title), fuzz.ratio(movie_title, title))
+        for title in titles
+    ]
     matches = [m for m in matches if m[1] >= 75]
-    print("Top fuzzy matches:", sorted(matches, key=lambda x: x[1], reverse=True)[:10])
+    print("Top fuzzy matches:", sorted(matches, key=lambda x: (x[1], x[2]), reverse=True)[:10])
    
     
     if not matches:
         raise ValueError(f"Movie titled '{movie_title_input}' not found in the database.")
 
     # Pick best match
-    best_match_title = max(matches, key=lambda x: x[1])[0]
+    best_match_title = max(matches, key=lambda x: (x[1], x[2]))[0]
 
     matched = df[df['title'].str.strip().str.lower() == best_match_title]
 
@@ -127,7 +130,7 @@ def recom(movie_title_input):
         return DEFAULT_IMAGE_URL
 
     final_list = []
-    for mid, _ in top_similar_movies:
+    for mid, similarity_score in top_similar_movies:
         row = df[df['movie_id'] == mid].iloc[0]
         title = row.get("title", "")
         image_url = get_image_url(mid)
@@ -143,7 +146,8 @@ def recom(movie_title_input):
             "genres": row.get("genres", ""),
             "overview": row.get("overview", ""),
             "cast": row.get("cast", ""),
-            "trailer_url": trailer_url
+            "trailer_url": trailer_url,
+            "similarity_score": similarity_score * 100
         })
 
     return final_list

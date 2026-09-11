@@ -1,6 +1,7 @@
 {% extends "layout.html" %}
 {% block content %}
 {% set field = "mt-1 block w-full rounded-xl border border-white/10 bg-zinc-950/60 px-4 py-3 text-sm text-white focus:border-amber-400 focus:outline-none focus:ring-2 focus:ring-amber-400/30" %}
+{% set password_field = field + " pr-12" %}
 <div class="mx-auto max-w-md animate-fade-up">
   <div class="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-2xl sm:p-8">
     <p class="text-xs uppercase tracking-[0.25em] text-amber-300">Create account</p>
@@ -19,12 +20,22 @@
       </div>
       <div>
         {{ form.password.label(class="text-sm font-medium text-zinc-300") }}
-        {{ form.password(class=field) }}
+        <div class="relative">
+          {{ form.password(class=password_field) }}
+          <button type="button" class="absolute inset-y-0 right-3 text-zinc-400 transition hover:text-white" data-password-toggle="password" aria-label="Show password">
+            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          </button>
+        </div>
         {% for error in form.password.errors %}<p class="mt-1 text-xs text-rose-300">{{ error }}</p>{% endfor %}
       </div>
       <div>
         {{ form.confirm_pswd.label(class="text-sm font-medium text-zinc-300") }}
-        {{ form.confirm_pswd(class=field) }}
+        <div class="relative">
+          {{ form.confirm_pswd(class=password_field) }}
+          <button type="button" class="absolute inset-y-0 right-3 text-zinc-400 transition hover:text-white" data-password-toggle="confirm_pswd" aria-label="Show password">
+            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          </button>
+        </div>
         {% for error in form.confirm_pswd.errors %}<p class="mt-1 text-xs text-rose-300">{{ error }}</p>{% endfor %}
       </div>
       {{ form.submit(class="w-full rounded-xl bg-amber-400 py-3 text-sm font-semibold text-zinc-950 transition hover:bg-amber-300") }}
@@ -35,4 +46,14 @@
     </p>
   </div>
 </div>
+<script>
+  document.querySelectorAll('[data-password-toggle]').forEach((toggle) => {
+    toggle.addEventListener('click', () => {
+      const password = document.getElementById(toggle.dataset.passwordToggle);
+      const isVisible = password.type === 'text';
+      password.type = isVisible ? 'password' : 'text';
+      toggle.setAttribute('aria-label', isVisible ? 'Show password' : 'Hide password');
+    });
+  });
+</script>
 {% endblock content %}
