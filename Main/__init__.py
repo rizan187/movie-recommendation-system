@@ -4,9 +4,17 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
 
-BASE_DIR = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
+PACKAGE_DIR = os.path.abspath(os.path.dirname(__file__))
+BASE_DIR = os.path.dirname(PACKAGE_DIR)
 
-app = Flask(__name__)
+# Use absolute asset paths so templates are found whether the server is started
+# with ``python run.py``, ``flask run``, or from an IDE with another working
+# directory.
+app = Flask(
+    __name__,
+    template_folder=os.path.join(PACKAGE_DIR, 'templates'),
+    static_folder=os.path.join(PACKAGE_DIR, 'static'),
+)
 app.config['SECRET_KEY'] = 'my-fixed-secret-key'
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL') or 'sqlite:///' + os.path.join(BASE_DIR, 'site.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
