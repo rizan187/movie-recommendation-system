@@ -18,6 +18,7 @@
         <button class="rounded-full bg-amber-400 px-5 py-2.5 text-sm font-semibold text-zinc-950 hover:bg-amber-300" type="button" data-play-trailer data-title="{{ movie.title|e }}" data-year="{{ movie.year|e }}">Watch Trailer</button>
         {% if current_user.is_authenticated %}
         <form method="POST" action="{{ url_for('add_to_watchlist', movie_id=movie.movie_id) }}">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
           <button class="rounded-full border border-white/15 px-5 py-2.5 text-sm font-semibold text-white hover:border-amber-400" type="submit">Add to Watchlist</button>
         </form>
         {% endif %}

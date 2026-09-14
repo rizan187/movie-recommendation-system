@@ -1,17 +1,39 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, BooleanField, IntegerField, TextAreaField, SelectField
-from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError, URL
+from wtforms.validators import DataRequired, Length, Email, EqualTo, Regexp, ValidationError, URL
 from flask_wtf.file import FileField, FileAllowed
+import re
 from Main.models import User
 import pandas as pd
 
 class RegistrationForm(FlaskForm):
     username = StringField('Username',
-                           validators=[DataRequired(), Length(min=2, max=20)])
+                           validators=[
+                               DataRequired(),
+                               Length(min=2, max=20),
+                               Regexp(
+                                   r'^[A-Za-z][A-Za-z0-9_]{1,19}$',
+                                   message='Username must start with a letter and contain only letters, numbers, and underscores.'
+                               ),
+                           ])
     email = StringField('Email',
-                        validators=[DataRequired(), Email()])
+                        validators=[
+                            DataRequired(),
+                            Email(),
+                            Regexp(
+                                r'^[A-Za-z0-9](?:[A-Za-z0-9._%+-]{0,62}[A-Za-z0-9])?@gmail\.com$',
+                                flags=re.IGNORECASE,
+                                message='Use a valid @gmail.com email address.'
+                            ),
+                        ])
     password = PasswordField('Password',
-                             validators=[DataRequired()])
+                             validators=[
+                                 DataRequired(),
+                                 Regexp(
+                                     r'^(?=.{8,64}$)(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9\s]).*$',
+                                     message='Password must be 8–64 characters and include uppercase, lowercase, number, and special character.'
+                                 ),
+                             ])
     confirm_pswd = PasswordField('Confirm Password',
                                      validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Sign Up')
@@ -28,7 +50,14 @@ class RegistrationForm(FlaskForm):
 
 class LoginForm(FlaskForm):
     email = StringField('Email',
-                        validators=[DataRequired(), Email()])
+                        validators=[
+                            DataRequired(),
+                            Email(),
+                            Regexp(
+                                r'^[^@\s]+@[^@\s]+\.[^@\s]+$',
+                                message='Enter a valid email address.'
+                            ),
+                        ])
     password = PasswordField('Password',
                              validators=[DataRequired()])
     remember = BooleanField('Remember Me')

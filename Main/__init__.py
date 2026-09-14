@@ -3,6 +3,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
+from flask_wtf.csrf import CSRFProtect
 
 PACKAGE_DIR = os.path.abspath(os.path.dirname(__file__))
 BASE_DIR = os.path.dirname(PACKAGE_DIR)
@@ -19,6 +20,7 @@ app.config['SECRET_KEY'] = 'my-fixed-secret-key'
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL') or 'sqlite:///' + os.path.join(BASE_DIR, 'site.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
+csrf = CSRFProtect(app)
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
 

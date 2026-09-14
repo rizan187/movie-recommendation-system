@@ -167,6 +167,7 @@
           <div class="mt-6 flex flex-wrap gap-3">
             {% if current_user.is_authenticated %}
             <form id="addWatchlistForm" method="POST" action="#">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
               <button class="rounded-full bg-amber-400 px-4 py-2 text-sm font-semibold text-zinc-950 hover:bg-amber-300" type="submit">Add to Watchlist</button>
             </form>
             {% endif %}
