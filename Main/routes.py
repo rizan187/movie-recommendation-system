@@ -99,6 +99,8 @@ def about():
     posts = [{'author': 'Sagar Jha', 'title': 'Content Based Movie Recommender'}]
     return render_template('about.html', posts=posts, title="About")
 
+# Registration, Login, Logout, and Account Management routes
+
 @app.route("/register", methods=['GET', 'POST'])
 def register():
     if current_user.is_authenticated:
@@ -113,6 +115,7 @@ def register():
         return redirect(url_for('login'))
     return render_template('register.html', title='Register', form=form)
 
+# Login, Logout, and Account Management routes are defined below
 @app.route("/login", methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
@@ -153,6 +156,7 @@ def recommender():
             flash(str(e), 'danger')
     return render_template('recommender.html', title='Recommender', form=form)
 
+# Admin routes for managing movies and users
 def upload_to_csv(file_name, row):
     file_exists = os.path.isfile(file_name)
     write_header = False
@@ -247,6 +251,7 @@ def account():
 
     return render_template('account.html', title='Account', image_file=image_file, form=form, timestamp=timestamp, watchlist=watchlist_movies)
 
+#Routes for search, trailer resolution, and surprise movie recommendation
 @app.route("/search")
 @login_required
 def search():
